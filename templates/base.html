@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    {% comment %} 不同页面会有不同标题 {% endcomment %}
+    <title>{% block title %}{% endblock title %}-LinNote</title>
+    <!-- 加载CSS样式 -->
+    <link rel="stylesheet" href="{% static 'bootstrap5/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <!-- 加载JS脚本 -->
+    <script src="{% static 'bootstrap5/popper.min.js'%}"></script>
+    <script src="{% static 'bootstrap5/bootstrap.min.js'%}"></script>
+    {% comment %} 这个位置留给以后加一下CSS 和 js 代码 {% endcomment %}
+    {% block head %}{% endblock head %}
+</head>
+
+<body>
+    <!-- border-bottom: 底部边框 -->
+    <!-- m - for classes that set margin -->
+    <!-- b - for classes that set margin-bottom or padding-bottom -->
+    <!-- 3 - (by default) for classes that set the margin or padding to $spacer -->
+    <header class="p-3 text-bg-light border-bottom mb-3">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                    <!-- 设置logo -->
+                    <img src="{% static 'image/logo003.jpg' %}" height="40">
+                </a>
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                    <!-- secondary 灰色 -->
+                    <li><a href="/" class="nav-link px-2 text-secondary">首页</a></li>
+                    {% comment %} 跳转到发布博客页面 {% endcomment %}
+                    <li><a href="{% url 'blog:pub_blog' %}" class="nav-link px-2 text-secondary">发布博客</a></li>
+                </ul>
+                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" action="{% url 'blog:search' %}" method="GET"> 
+                    <input type="search" class="form-control"  name="q" placeholder="搜索..." aria-label="Search">
+                </form>
+                {% comment %} 
+                user.is_authenticated 是jango.contrib.auth.models.User类的一个属性
+                它可以判断，当前用户是否登录
+                {% endcomment %}
+                {% if user.is_authenticated %}
+                    {% comment %} 如果登录了，就显示用户的头像 {% endcomment %}
+                    <!-- 下面是bootstrap的一个样式 -->
+                    <div class="dropdown text-end">
+                        <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="{% static 'image/avatar.jpg' %}" alt="mdo" width="32" height="32" class="rounded-circle">
+                        </a>
+                        <ul class="dropdown-menu text-small" style="">
+                            <li><a class="dropdown-item" href="{% url 'linauth:logout' %}">退出登录</a></li>
+                        </ul>
+                    </div>
+                {% else %}
+                    {% comment %} 如果没有登录，就显示登录和注册两个按钮 {% endcomment %}
+                    <!-- primary：蓝色 -->
+                    <div class="text-end"> 
+                        {% comment %} 注意，这里的标签从button变成 a {% endcomment %}
+                        <a href="{% url 'linauth:login' %}" type="button" class="btn btn-outline-primary">登录</a> 
+                        <a href="{% url 'linauth:register' %}" type="button" class="btn btn-primary">注册</a> 
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+    <!-- p - for classes that set padding -->
+    <!-- rounded 添加圆角 -->
+    <main class="container bg-white p-3 rounded">
+        {% comment %} 每个页面的主体部分代码 {% endcomment %}
+        {% block main %}{% endblock %}
+    </main>
+</body>
+
+</html>
